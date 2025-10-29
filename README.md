@@ -44,7 +44,7 @@ Start the server:
 npm start
 ```
 
-Open your browser at [http://localhost:3000](http://localhost:3000).  The app will show a deck of Fibonacci cards.  Click a card to vote.  Your selection is highlighted and broadcast to everyone else.  Use the **Reveal Votes** button to show everyone’s votes.  Use **New Round** to reset.
+Open your browser at [http://localhost:3001](http://localhost:3001).  The app will show a deck of Fibonacci cards.  Click a card to vote.  Your selection is highlighted and broadcast to everyone else.  Use the **Reveal Votes** button to show everyone’s votes.  Use **New Round** to reset.
 
 ### Running in development
 
