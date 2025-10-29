@@ -4,9 +4,9 @@ A lightweight but feature‑rich **Planning Poker** web application built with *
 
 ## 🎯 Motivation
 
-Agile teams often estimate work using *Planning Poker* cards.  The values on these cards follow the **Fibonacci sequence**—each number is the sum of the two preceding ones (1, 2, 3, 5, 8, 13, 21…).  This sequence increases by roughly 60 %, which helps distinguish estimates: numbers that are too close together are harder to tell apart, whereas the Fibonacci scale spreads estimates far enough that differences are meaningful【187908546349024†L245-L289】.  In planning sessions the modified sequence (1, 2, 3, 5, 8, 13, 20, 40, 100) is common【187908546349024†L245-L305】.
+Agile teams often estimate work using *Planning Poker* cards.  The values on these cards follow the **Fibonacci sequence**—each number is the sum of the two preceding ones (1, 2, 3, 5, 8, 13, 21…).  This sequence increases by roughly 60 %, which helps distinguish estimates: numbers that are too close together are harder to tell apart, whereas the Fibonacci scale spreads estimates far enough that differences are meaningful.  In planning sessions the modified sequence (1, 2, 3, 5, 8, 13, 20, 40, 100) is common.
 
-The browser’s [`localStorage` API](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) stores data across browser sessions; unlike `sessionStorage`, it has no expiration【244963244707008†L185-L193】.  This app uses `localStorage` to assign each anonymous participant a unique ID that persists across refreshes without needing an account.
+The browser’s [`localStorage` API](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) stores data across browser sessions; unlike `sessionStorage`, it has no expiration.  This app uses `localStorage` to assign each anonymous participant a unique ID that persists across refreshes without needing an account.
 
 ## ✨ Features
 
