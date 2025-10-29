@@ -1,6 +1,7 @@
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
+const { v4: uuidv4 } = require('uuid');
 
 // Create Express application
 const app = express();
@@ -41,24 +42,23 @@ const MAX_CONNECTIONS = 50;
 const sessions = {};
 
 /**
- * Compute the Fibonacci sequence up to a given length. Returns an array of
- * numbers starting at 0. The default set covers a typical planning poker
- * sequence. If the length is greater than the available values, it will
- * continue summing the last two numbers.
- * @param {number} length Number of Fibonacci values to generate
+ * Generate a simple round ID for vote tracking
  */
-function getFibonacci(length = 10) {
-  const seq = [0, 1];
-  while (seq.length < length) {
-    const next = seq[seq.length - 1] + seq[seq.length - 2];
-    seq.push(next);
-  }
-  return seq;
+function generateRoundId() {
+  return Date.now().toString(36) + Math.random().toString(36).substring(2, 7);
+}
+
+/**
+ * Return the standard planning poker Fibonacci sequence.
+ * Starts at 1 and includes common values used in planning poker.
+ */
+function getFibonacci() {
+  return [1, 2, 3, 5, 8, 13, 21, 34, 55, 89];
 }
 
 // HTTP endpoint to retrieve the Fibonacci sequence values for clients
 app.get('/api/fibonacci', (_req, res) => {
-  res.json({ values: getFibonacci(10) });
+  res.json({ values: getFibonacci() });
 });
 
 // HTTP endpoint to generate a unique session ID
@@ -68,10 +68,10 @@ app.post('/api/sessions', (_req, res) => {
 });
 
 /**
- * Generate a random unique identifier
+ * Generate a random unique identifier using UUID v4
  */
 function generateId() {
-  return Math.random().toString(36).substring(2, 10) + Date.now().toString(36);
+  return uuidv4();
 }
 
 /**
@@ -87,14 +87,16 @@ function broadcastState(sessionId) {
     const client = session.clients[id];
     payload[id] = {
       displayName: client.displayName || `User ${id.slice(0, 6)}`,
-      vote: session.revealed ? client.vote : (client.vote !== null)
+      vote: client.vote,
+      hasVoted: client.vote !== null
     };
   });
   
   io.to(sessionId).emit('state', { 
     revealed: session.revealed, 
     votes: payload,
-    sessionName: session.sessionName
+    sessionName: session.sessionName,
+    roundId: session.roundId
   });
 }
 
@@ -112,10 +114,12 @@ io.on('connection', (socket) => {
   // Create or join a session
   socket.on('createSession', ({ sessionName }) => {
     const sessionId = generateId();
+    const roundId = generateRoundId();
     sessions[sessionId] = {
       sessionName: sessionName || 'Planning Session',
       clients: {},
-      revealed: false
+      revealed: false,
+      roundId: roundId
     };
     socket.emit('sessionCreated', { sessionId, sessionName: sessions[sessionId].sessionName });
   });
@@ -145,7 +149,8 @@ io.on('connection', (socket) => {
     
     socket.emit('sessionJoined', { 
       sessionId, 
-      sessionName: session.sessionName 
+      sessionName: session.sessionName,
+      roundId: session.roundId
     });
     broadcastState(sessionId);
   });
@@ -195,6 +200,7 @@ io.on('connection', (socket) => {
       session.clients[id].vote = null;
     });
     session.revealed = false;
+    session.roundId = generateRoundId(); // Generate new round ID
     broadcastState(sessionId);
   });
 
