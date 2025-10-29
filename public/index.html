@@ -11,42 +11,138 @@
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-      integrity="sha512-..."
+      integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-    <style>
-      /* Card styles for a more “juicy” feel */
-      .card {
-        @apply flex items-center justify-center h-24 w-20 rounded-lg shadow-md cursor-pointer select-none transition-transform duration-300 ease-in-out;
-      }
-      .card:hover {
-        @apply scale-110;
-      }
-      .card.selected {
-        @apply bg-blue-600 text-white shadow-lg scale-105;
-      }
-    </style>
+    <link rel="stylesheet" href="styles.css" />
   </head>
-  <body class="bg-gray-100 min-h-screen flex flex-col items-center p-4">
-    <h1 class="text-3xl font-bold mb-4">Planning Poker</h1>
-    <div id="message" class="hidden mb-4 text-red-600"></div>
-    <div id="cards" class="flex flex-wrap gap-3 justify-center mb-6"></div>
-    <div class="flex gap-4 mb-6">
-      <button
-        id="revealButton"
-        class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded shadow"
-      >
-        <i class="fas fa-eye"></i> Reveal Votes
-      </button>
-      <button
-        id="resetButton"
-        class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded shadow"
-      >
-        <i class="fas fa-sync"></i> New Round
-      </button>
+  <body>
+    <!-- Session Setup Screen -->
+    <div id="setupScreen" class="screen active">
+      <div class="setup-container">
+        <div class="logo-container">
+          <i class="fas fa-hand-spock logo-icon"></i>
+          <h1 class="title">Planning Poker</h1>
+          <p class="subtitle">Estimate with your team in real-time</p>
+        </div>
+        
+        <div class="setup-form">
+          <div class="input-group">
+            <label for="displayNameInput">
+              <i class="fas fa-user"></i> Your Display Name
+            </label>
+            <input
+              type="text"
+              id="displayNameInput"
+              placeholder="Enter your name"
+              maxlength="30"
+            />
+          </div>
+
+          <div class="button-group">
+            <button id="createSessionBtn" class="btn btn-primary btn-large">
+              <i class="fas fa-plus-circle"></i> Create New Session
+            </button>
+            <div class="divider">
+              <span>or</span>
+            </div>
+            <div class="input-group">
+              <label for="sessionIdInput">
+                <i class="fas fa-link"></i> Join Existing Session
+              </label>
+              <input
+                type="text"
+                id="sessionIdInput"
+                placeholder="Enter session ID"
+              />
+            </div>
+            <button id="joinSessionBtn" class="btn btn-secondary btn-large">
+              <i class="fas fa-sign-in-alt"></i> Join Session
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
-    <div id="results" class="w-full max-w-md"></div>
+
+    <!-- Session Name Modal -->
+    <div id="sessionNameModal" class="modal">
+      <div class="modal-content">
+        <h3><i class="fas fa-tag"></i> Name Your Session</h3>
+        <div class="input-group">
+          <input
+            type="text"
+            id="sessionNameInput"
+            placeholder="e.g., Sprint 42 Planning"
+            maxlength="50"
+          />
+        </div>
+        <div class="modal-actions">
+          <button id="confirmSessionNameBtn" class="btn btn-primary">
+            <i class="fas fa-check"></i> Create
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Poker Planning Screen -->
+    <div id="pokerScreen" class="screen">
+      <div class="poker-container">
+        <!-- Header -->
+        <header class="poker-header">
+          <div class="session-info">
+            <div class="session-name-container">
+              <h1 id="sessionNameDisplay" class="session-name">Planning Session</h1>
+              <button id="editSessionNameBtn" class="icon-btn" title="Edit session name">
+                <i class="fas fa-edit"></i>
+              </button>
+            </div>
+            <div class="session-id-container">
+              <span class="session-id" id="sessionIdDisplay"></span>
+              <button id="copySessionIdBtn" class="icon-btn" title="Copy session ID">
+                <i class="fas fa-copy"></i>
+              </button>
+            </div>
+          </div>
+          
+          <div class="user-info">
+            <div class="display-name-container">
+              <i class="fas fa-user"></i>
+              <span id="userDisplayName">User</span>
+              <button id="editDisplayNameBtn" class="icon-btn" title="Change name">
+                <i class="fas fa-edit"></i>
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <!-- Error Message -->
+        <div id="message" class="message hidden"></div>
+
+        <!-- Voting Cards -->
+        <section class="cards-section">
+          <h2 class="section-title">Select Your Estimate</h2>
+          <div id="cards" class="cards-container"></div>
+        </section>
+
+        <!-- Action Buttons -->
+        <div class="actions">
+          <button id="revealButton" class="btn btn-success btn-large">
+            <i class="fas fa-eye"></i> Reveal Votes
+          </button>
+          <button id="resetButton" class="btn btn-danger btn-large">
+            <i class="fas fa-redo"></i> New Round
+          </button>
+        </div>
+
+        <!-- Results -->
+        <section class="results-section">
+          <h2 class="section-title">Participants</h2>
+          <div id="results" class="results-container"></div>
+        </section>
+      </div>
+    </div>
+
     <!-- Socket.io client library -->
     <script src="/socket.io/socket.io.js"></script>
     <script src="app.js"></script>
