@@ -14,7 +14,7 @@ describe('PokerPlanning API', () => {
 
 describe('getFibonacci utility', () => {
   it('should generate a Fibonacci sequence of the specified length', () => {
-    const seq = getFibonacci(7);
-    expect(seq).toEqual([0, 1, 1, 2, 3, 5, 8]);
+    const seq = getFibonacci();
+    expect(seq).toEqual([1, 2, 3, 5, 8, 13, 21, 34, 55, 89]);
   });
 });
