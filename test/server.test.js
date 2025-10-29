@@ -8,7 +8,7 @@ describe('PokerPlanning API', () => {
     expect(res.body).toHaveProperty('values');
     // Should contain at least 10 numbers and include 1, 2, 3, 5
     expect(res.body.values.length).toBeGreaterThanOrEqual(10);
-    expect(res.body.values.slice(0, 5)).toEqual([0, 1, 1, 2, 3]);
+    expect(res.body.values.slice(0, 5)).toEqual([1, 2, 3, 5, 8]);
   });
 });
 
