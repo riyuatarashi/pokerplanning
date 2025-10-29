@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Planning Poker</title>
+    <!-- Tailwind via CDN (for development simplicity) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome (free version) -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      integrity="sha512-..."
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <style>
+      /* Card styles for a more “juicy” feel */
+      .card {
+        @apply flex items-center justify-center h-24 w-20 rounded-lg shadow-md cursor-pointer select-none transition-transform duration-300 ease-in-out;
+      }
+      .card:hover {
+        @apply scale-110;
+      }
+      .card.selected {
+        @apply bg-blue-600 text-white shadow-lg scale-105;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 min-h-screen flex flex-col items-center p-4">
+    <h1 class="text-3xl font-bold mb-4">Planning Poker</h1>
+    <div id="message" class="hidden mb-4 text-red-600"></div>
+    <div id="cards" class="flex flex-wrap gap-3 justify-center mb-6"></div>
+    <div class="flex gap-4 mb-6">
+      <button
+        id="revealButton"
+        class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded shadow"
+      >
+        <i class="fas fa-eye"></i> Reveal Votes
+      </button>
+      <button
+        id="resetButton"
+        class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded shadow"
+      >
+        <i class="fas fa-sync"></i> New Round
+      </button>
+    </div>
+    <div id="results" class="w-full max-w-md"></div>
+    <!-- Socket.io client library -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
