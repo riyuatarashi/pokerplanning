@@ -16,7 +16,7 @@ Une application **Planning Poker** légère en **Node.js / Express / socket.io**
 Le Planning Poker aide les équipes Agile à estimer grâce à une échelle dérivée de Fibonacci (1,2,3,5,8,13,…). Les espacements croissants évitent les débats sur des chiffres trop proches. Ici, on expose une séquence étendue pour la granularité des estimations.
 
 ## ✨ Fonctionnalités
-- Création / Rejoint de session en temps réel (WebSockets via socket.io)
+- Créé / Rejoint des sessions en temps réel (WebSockets via socket.io)
 - Stockage local (persistence de l'identité anonyme & des votes par round)
 - Cartes Fibonacci prédéfinies (`[1,2,3,5,8,13,21,34,55,89]`)
 - Reveal global des votes & reset (nouveau round avec nouvel identifiant)
