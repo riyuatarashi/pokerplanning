@@ -115,8 +115,16 @@ export const Vote = {
 
       const userDiv = document.createElement('div');
       userDiv.className = 'result-user';
-      const statusDot = `<span class="vote-status-dot ${data.hasVoted ? 'voted' : 'waiting'}"></span>`;
-      userDiv.innerHTML = `${statusDot} <i class="fas fa-user"></i> ${data.displayName}`;
+      const statusDotEl = document.createElement('span');
+      statusDotEl.className = `vote-status-dot ${data.hasVoted ? 'voted' : 'waiting'}`;
+      const userIconEl = document.createElement('i');
+      userIconEl.className = 'fas fa-user';
+      const displayNameEl = document.createElement('span');
+      displayNameEl.className = 'display-name';
+      displayNameEl.textContent = data.displayName;
+      userDiv.appendChild(statusDotEl);
+      userDiv.appendChild(userIconEl);
+      userDiv.appendChild(displayNameEl);
 
       const voteDiv = document.createElement('div');
       voteDiv.className = 'result-vote';
