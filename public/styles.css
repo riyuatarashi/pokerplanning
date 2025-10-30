@@ -655,6 +655,71 @@ body {
   }
 }
 
+/* Vote status enhancements (participants avant révélation) */
+.vote-status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.08);
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+.vote-status-dot.voted {
+  background: var(--success);
+  animation: pulseDot 1.2s ease-in-out infinite;
+}
+
+.vote-status-dot.waiting {
+  background: var(--warning);
+  opacity: 0.6;
+}
+
+@keyframes pulseDot {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.35); }
+}
+
+/* Réduit l’animation si l’utilisateur préfère moins de mouvement */
+@media (prefers-reduced-motion: reduce) {
+  .vote-status-dot.voted {
+    animation: none;
+  }
+}
+
+/* Lignes participant stylées selon statut avant reveal */
+.result-item.voted {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #fff;
+}
+.result-item.voted .result-user i {
+  color: #fff;
+}
+.result-item.waiting {
+  background: #fff8e6;
+}
+.result-item.waiting:hover {
+  background: #fde9c8;
+}
+
+/* Cellule vote avant révélation différenciée */
+.result-vote.pending.voted {
+  background: #dcfce7;
+  color: #047857;
+  font-weight: 700;
+}
+.result-vote.pending.waiting {
+  background: #fef3c7;
+  color: #9ca3af;
+}
+
+/* (Optionnel) Si la classe .card.disabled n’est plus utilisée, on peut l’atténuer */
+.card.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
 /* Consensus Banner */
 .consensus-banner {
   padding: 0.5rem 1rem;
