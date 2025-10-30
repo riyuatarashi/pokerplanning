@@ -58,7 +58,7 @@ export function updateHeader() {
 
 function toggleAvailability(btn, enabled) {
   log('DOM:toggleAvailability', btn?.id, enabled);
-  if (!btn) {return;}
+  if (!btn) { return; }
   enabled ? btn.removeAttribute('disabled') : btn.setAttribute('disabled', 'disabled');
 }
 
