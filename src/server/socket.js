@@ -52,7 +52,7 @@ function attachSocketHandlers(io) {
 
     socket.on('updateDisplayName', ({ sessionId, clientId, displayName }) => {
       const s = sessions[sessionId];
-      if (!s || !s.clients[clientId]) return;
+      if (!s || !s.clients[clientId]) { return; }
       s.clients[clientId].displayName = displayName;
       logger.logSession(sessionId, 'updateDisplayName', clientId, 'new='+displayName);
       broadcastState(io, sessionId);
@@ -60,7 +60,7 @@ function attachSocketHandlers(io) {
 
     socket.on('updateSessionName', ({ sessionId, sessionName }) => {
       const s = sessions[sessionId];
-      if (!s) return;
+      if (!s) { return; }
       s.sessionName = sessionName;
       logger.logSession(sessionId, 'updateSessionName', 'new='+sessionName);
       broadcastState(io, sessionId);
@@ -68,7 +68,7 @@ function attachSocketHandlers(io) {
 
     socket.on('vote', ({ sessionId, clientId, value }) => {
       const s = sessions[sessionId];
-      if (!s || !s.clients[clientId]) return;
+      if (!s || !s.clients[clientId]) { return; }
       s.clients[clientId].vote = value;
       logger.logSession(sessionId, 'vote', clientId, 'value='+value, 'revealed='+s.revealed);
       broadcastState(io, sessionId);
@@ -76,7 +76,7 @@ function attachSocketHandlers(io) {
 
     socket.on('reveal', ({ sessionId }) => {
       const s = sessions[sessionId];
-      if (!s) return;
+      if (!s) { return; }
       s.revealed = true;
       logger.logSession(sessionId, 'reveal');
       broadcastState(io, sessionId);
@@ -85,7 +85,7 @@ function attachSocketHandlers(io) {
 
     socket.on('reset', ({ sessionId }) => {
       const s = sessions[sessionId];
-      if (!s) return;
+      if (!s) { return; }
       Object.keys(s.clients).forEach(id => { s.clients[id].vote = null; });
       s.revealed = false; s.roundId = generateRoundId();
       logger.logSession(sessionId, 'reset', 'newRoundId='+s.roundId);
@@ -96,7 +96,7 @@ function attachSocketHandlers(io) {
     socket.on('leaveSession', ({ sessionId, clientId }) => {
       const normId = (sessionId||'').trim().toLowerCase();
       const s = sessions[normId];
-      if (!s || !s.clients[clientId]) return;
+      if (!s || !s.clients[clientId]) { return; }
       delete s.clients[clientId];
       socket.leave(normId);
       logger.logSession(normId, 'leaveSession', clientId);

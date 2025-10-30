@@ -16,7 +16,7 @@ function getSession(sessionId) { return sessions[sessionId] || null; }
 /** If all numeric votes identical returns that number, else null */
 function computeConsensus(session) {
   const votes = Object.values(session.clients).map(c => c.vote).filter(v => typeof v === 'number');
-  if (votes.length === 0) return null;
+  if (votes.length === 0) { return null; }
   return new Set(votes).size === 1 ? votes[0] : null;
 }
 
@@ -37,7 +37,7 @@ function buildVotesPayload(session) {
 // --- Broadcasting & logging -------------------------------------------
 function broadcastState(io, sessionId) {
   const session = getSession(sessionId);
-  if (!session) return;
+  if (!session) {return;}
   io.to(sessionId).emit('state', {
     revealed: session.revealed,
     votes: buildVotesPayload(session),
@@ -63,7 +63,7 @@ function logSessionState(io, logger, label, sessionId) {
 // --- Cleanup -----------------------------------------------------------
 function scheduleSessionCleanup(io, logger, sessionId) {
   const s = getSession(sessionId);
-  if (!s) return;
+  if (!s) { return; }
   if (s.cleanupTimeout) { clearTimeout(s.cleanupTimeout); s.cleanupTimeout = null; }
   s.cleanupTimeout = setTimeout(() => {
     const current = getSession(sessionId);

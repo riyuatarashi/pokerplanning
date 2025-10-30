@@ -47,9 +47,9 @@ export function showScreen(el) {
 /** Update header (session name, user name, and button enable states). */
 export function updateHeader() {
   log('DOM:updateHeader', { sessionId: state.sessionId, sessionName: state.sessionName, joined: state.joined });
-  if (refs.sessionNameDisplay) refs.sessionNameDisplay.textContent = state.sessionName || 'Planning Session';
-  if (refs.sessionIdDisplay) refs.sessionIdDisplay.textContent = state.sessionId || '';
-  if (refs.userDisplayName) refs.userDisplayName.textContent = state.displayName || 'User';
+  if (refs.sessionNameDisplay) { refs.sessionNameDisplay.textContent = state.sessionName || 'Planning Session'; }
+  if (refs.sessionIdDisplay) { refs.sessionIdDisplay.textContent = state.sessionId || ''; }
+  if (refs.userDisplayName) { refs.userDisplayName.textContent = state.displayName || 'User'; }
   toggleAvailability(refs.copyInviteLinkBtn, !!state.sessionId);
   toggleAvailability(refs.revealBtn, state.joined);
   toggleAvailability(refs.resetBtn, state.joined);
@@ -58,7 +58,7 @@ export function updateHeader() {
 
 function toggleAvailability(btn, enabled) {
   log('DOM:toggleAvailability', btn?.id, enabled);
-  if (!btn) return;
+  if (!btn) {return;}
   enabled ? btn.removeAttribute('disabled') : btn.setAttribute('disabled', 'disabled');
 }
 
@@ -79,7 +79,7 @@ export function clearCardSelection() {
 
 /** Restore the previously selected card (if any). */
 export function restoreSelection() {
-  if (state.selectedValue == null) return;
+  if (state.selectedValue === null || state.selectedValue === undefined) { return; }
   const card = document.querySelector(`.card[data-value="${state.selectedValue}"]`);
   if (card) { clearCardSelection(); card.classList.add('selected'); }
 }

@@ -29,6 +29,6 @@ function startWithFallback(port=BASE_PORT) {
     }
   }).once('listening', () => console.log(`PokerPlanning server running on port ${port}`));
 }
-if (process.env.NODE_ENV !== 'test') startWithFallback();
+if (process.env.NODE_ENV !== 'test') { startWithFallback(); }
 
 module.exports = { app, server, getFibonacci, sessions, clearCleanupTimeouts };

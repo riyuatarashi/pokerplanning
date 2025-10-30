@@ -12,7 +12,7 @@ export const Vote = {
   /** Load Fibonacci cards from API. */
   loadCards() {
     log('Vote:loadCards');
-    if (!refs.cardsContainer) return;
+    if (!refs.cardsContainer) {return;}
     fetch('/api/fibonacci').then(r => r.json()).then(d => this.renderCards(d.values)).catch(() => toast('Failed to load cards', 'error'));
   },
   /** Render interactive planning cards. */
@@ -24,9 +24,8 @@ export const Vote = {
       card.className = 'card';
       card.dataset.value = v;
       card.textContent = v;
-      if (state.selectedValue === v) card.classList.add('selected');
-      // Removed card disabling after reveal
-      card.addEventListener('click', () => this.select(v));
+      if (state.selectedValue === v) { card.classList.add('selected'); }
+      card.addEventListener('click', () => { this.select(v); });
       refs.cardsContainer.appendChild(card);
     });
   },
@@ -37,7 +36,7 @@ export const Vote = {
     state.selectedValue = value;
     clearCardSelection();
     const el = document.querySelector(`.card[data-value="${value}"]`);
-    el && el.classList.add('selected');
+    if (el) { el.classList.add('selected'); }
     socket && socket.emit('vote', { sessionId: state.sessionId, clientId: state.clientId, value });
     Storage.saveVote(state.sessionId, state.roundId, value);
   },
@@ -45,7 +44,7 @@ export const Vote = {
   restoreVote() {
     log('Vote:restoreVote');
     const stored = Storage.getVote(state.sessionId, state.roundId);
-    if (stored != null) {
+    if (stored !== null && stored !== undefined) {
       state.selectedValue = stored;
       restoreSelection();
       socket && socket.emit('vote', { sessionId: state.sessionId, clientId: state.clientId, value: stored });
@@ -55,14 +54,14 @@ export const Vote = {
   renderState({ revealed, votes, sessionName, roundId, consensus }) {
     log('Vote:renderState', { revealed, roundId, consensus, votes: Object.keys(votes).length });
     state.revealed = revealed;
-    if (sessionName && sessionName !== state.sessionName) state.sessionName = sessionName;
+    if (sessionName && sessionName !== state.sessionName) { state.sessionName = sessionName; }
     if (roundId && roundId !== state.roundId) {
       state.roundId = roundId;
       state.selectedValue = null;
       state.revealed = false;
       clearCardSelection();
     }
-    if (!refs.resultsEl) return;
+    if (!refs.resultsEl) { return; }
 
     // Prepare / update the consensus banner
     let banner = document.getElementById('consensusBanner');
@@ -72,12 +71,10 @@ export const Vote = {
       banner.className = 'consensus-banner hidden';
       refs.resultsEl.parentElement && refs.resultsEl.parentElement.insertBefore(banner, refs.resultsEl);
     }
-    if (revealed && consensus != null) {
+    if (revealed && consensus !== null && consensus !== undefined) {
       banner.textContent = `Consensus reached: ${consensus}`;
       banner.classList.remove('hidden');
-    } else {
-      banner.classList.add('hidden');
-    }
+    } else { banner.classList.add('hidden'); }
 
     // Statistics
     if (refs.statisticsEl) {
@@ -85,7 +82,7 @@ export const Vote = {
         const stats = computeStats(votes);
         if (stats) {
           // Construction DOM sécurisée au lieu de innerHTML
-          while (refs.statisticsEl.firstChild) refs.statisticsEl.removeChild(refs.statisticsEl.firstChild);
+          while (refs.statisticsEl.firstChild) { refs.statisticsEl.removeChild(refs.statisticsEl.firstChild); }
           const cards = [
             { icon: 'fas fa-arrow-down', label: 'Min', value: stats.min },
             { icon: 'fas fa-chart-line', label: 'Avg', value: stats.avg },
@@ -102,25 +99,19 @@ export const Vote = {
             refs.statisticsEl.appendChild(card);
           });
           refs.statisticsEl.classList.remove('hidden');
-        } else {
-          refs.statisticsEl.classList.add('hidden');
-        }
-      } else {
-        refs.statisticsEl.classList.add('hidden');
-      }
+        } else { refs.statisticsEl.classList.add('hidden'); }
+      } else { refs.statisticsEl.classList.add('hidden'); }
     }
 
     // Rendu des participants (tri votés d'abord si non révélé)
     refs.resultsEl.innerHTML = '';
-    let entries = Object.entries(votes);
-    if (!revealed) {
-      entries.sort((a,b) => (b[1].hasVoted ? 1 : 0) - (a[1].hasVoted ? 1 : 0));
-    }
+    const entries = Object.entries(votes);
+    if (!revealed) { entries.sort((a, b) => (b[1].hasVoted ? 1 : 0) - (a[1].hasVoted ? 1 : 0)); }
     entries.forEach(([id, data]) => {
       const item = document.createElement('div');
       item.className = 'result-item';
       item.dataset.clientId = id; // expose client id for potential tooling
-      if (!revealed) item.classList.add(data.hasVoted ? 'voted' : 'waiting');
+      if (!revealed) { item.classList.add(data.hasVoted ? 'voted' : 'waiting'); }
 
       const userDiv = document.createElement('div');
       userDiv.className = 'result-user';
@@ -130,7 +121,7 @@ export const Vote = {
       const voteDiv = document.createElement('div');
       voteDiv.className = 'result-vote';
       if (revealed) {
-        voteDiv.textContent = data.vote != null ? data.vote : '\u2014';
+        voteDiv.textContent = (data.vote !== null && data.vote !== undefined) ? data.vote : '\u2014';
         voteDiv.classList.add('revealed');
       } else {
         voteDiv.textContent = data.hasVoted ? '\u2713' : '\u2014';

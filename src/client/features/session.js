@@ -9,10 +9,10 @@ let socket;
 export function attachSessionSocket(s) { socket = s; }
 
 function setSessionQuery(sessionId) {
-  if (!sessionId) return;
+  if (!sessionId) {return;}
   try {
     const url = new URL(location.href);
-    if (url.searchParams.get('session') === sessionId) return; // already up to date
+    if (url.searchParams.get('session') === sessionId) {return;} // already up to date
     url.searchParams.set('session', sessionId);
     history.replaceState(null, '', url.toString());
     log('URL updated with session', sessionId);
@@ -21,7 +21,7 @@ function setSessionQuery(sessionId) {
 function clearSessionQuery() {
   try {
     const url = new URL(location.href);
-    if (!url.searchParams.has('session')) return;
+    if (!url.searchParams.has('session')) {return;}
     url.searchParams.delete('session');
     const newUrl = url.pathname + (url.search ? url.search : '') + url.hash;
     history.replaceState(null, '', newUrl);
@@ -51,7 +51,7 @@ export const Session = {
   },
   /** Register socket listeners for session lifecycle and state updates. */
   registerEvents() {
-    if (!socket) return;
+    if (!socket) { return; }
     socket.on('sessionCreated', ({ sessionId, sessionName }) => {
       const norm = (sessionId||'').trim().toLowerCase();
       log('Socket:sessionCreated', sessionId, 'normalized='+norm, sessionName);
@@ -73,14 +73,14 @@ export const Session = {
       updateHeader();
       showScreen(refs.pokerScreen);
       Vote.loadCards();
-      setTimeout(() => Vote.restoreVote(), 75);
+      setTimeout(() => { Vote.restoreVote(); }, 75);
     });
     socket.on('state', data => {
       log('Socket:state', { revealed: data.revealed, roundId: data.roundId, votes: Object.keys(data.votes).length });
       Vote.renderState(data);
       if (data.votes[state.clientId]) {
         const sv = data.votes[state.clientId].vote;
-        if (sv != null && sv !== state.selectedValue) {
+        if (sv !== null && sv !== undefined && sv !== state.selectedValue) {
           state.selectedValue = sv;
           Storage.saveVote(state.sessionId, state.roundId, sv);
         }
@@ -103,21 +103,21 @@ export const Session = {
         refs.messageEl.textContent = message;
         refs.messageEl.classList.remove('hidden');
       }
-      if (refs.revealBtn) refs.revealBtn.disabled = true;
-      if (refs.resetBtn) refs.resetBtn.disabled = true;
+      if (refs.revealBtn) { refs.revealBtn.disabled = true; }
+      if (refs.resetBtn) { refs.resetBtn.disabled = true; }
     });
     socket.on('disconnect', () => {
       log('Socket:disconnect');
-      toast('Connection lost. Reconnecting...', 'error')
+      toast('Connection lost. Reconnecting...', 'error');
     });
     socket.on('reconnect', () => {
       log('Socket:reconnect');
-      toast('Reconnected successfully!', 'success')
+      toast('Reconnected successfully!', 'success');
     });
     socket.on('connect', () => {
       log('Socket:connect');
       // Auto-rejoin after refresh even if displayName empty (server will provide fallback)
-      if (state.sessionId) this.join(state.sessionId);
+      if (state.sessionId) { this.join(state.sessionId); }
     });
   }
 };

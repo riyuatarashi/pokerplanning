@@ -5,8 +5,8 @@ import { state, LS_KEYS, generateClientId } from './state.js';
 import { log } from './logger.js';
 
 function safeGet(key) { try { return localStorage.getItem(key); } catch { return null; } }
-function safeSet(key, val) { try { localStorage.setItem(key, val); } catch {} }
-function safeRemove(key) { try { localStorage.removeItem(key); } catch {} }
+function safeSet(key, val) { try { localStorage.setItem(key, val); } catch { /* empty */ } }
+function safeRemove(key) { try { localStorage.removeItem(key); } catch { /* empty */ } }
 
 export const Storage = {
   /** Initialize state from localStorage. */
@@ -21,7 +21,7 @@ export const Storage = {
   /** Persist current session id and name. */
   persistSession() {
     log('Storage:persistSession', state.sessionId);
-    if (!state.sessionId) return;
+    if (!state.sessionId) { return; }
     safeSet(LS_KEYS.SESSION_ID, state.sessionId);
     safeSet(LS_KEYS.SESSION_NAME, state.sessionName);
   },
@@ -37,16 +37,16 @@ export const Storage = {
   /** Save the local vote (or remove if null). */
   saveVote(sessionId, roundId, value) {
     log('Storage:saveVote', sessionId, roundId, value);
-    if (!sessionId || !roundId) return;
+    if (!sessionId || !roundId) { return; }
     const k = this.voteKey(sessionId, roundId);
-    value == null ? safeRemove(k) : safeSet(k, String(value));
+    if (value === null || value === undefined) { safeRemove(k); } else { safeSet(k, String(value)); }
   },
   /** Retrieve the stored local vote value (number or null). */
   getVote(sessionId, roundId) {
     log('Storage:getVote', sessionId, roundId);
-    if (!sessionId || !roundId) return null;
+    if (!sessionId || !roundId) { return null; }
     const raw = safeGet(this.voteKey(sessionId, roundId));
-    if (raw == null || raw === 'null') return null;
+    if (raw === null || raw === 'null') { return null; }
     const n = parseInt(raw, 10);
     return Number.isNaN(n) ? null : n;
   }

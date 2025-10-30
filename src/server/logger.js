@@ -7,10 +7,10 @@ function createLogger(io) {
     const printable = format(parts);
     if (room) {
       console.log('\x1b[36m🐾 [Session:' + room + ']\x1b[0m', printable);
-      try { io.to(room).emit('serverLog', { message: printable, ts: Date.now() }); } catch {}
+      try { io.to(room).emit('serverLog', { message: printable, ts: Date.now() }); } catch { /* ignore emit error */ }
     } else {
       console.log('\x1b[35m🐾 [Server]\x1b[0m', printable);
-      try { io.emit('serverLog', { message: printable, ts: Date.now() }); } catch {}
+      try { io.emit('serverLog', { message: printable, ts: Date.now() }); } catch { /* ignore emit error */ }
     }
   }
   return {

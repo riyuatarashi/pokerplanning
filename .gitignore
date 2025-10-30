@@ -4,3 +4,5 @@ node_modules/
 *.log
 coverage/
 .idea
+public/dist/*
+.eslintcache
