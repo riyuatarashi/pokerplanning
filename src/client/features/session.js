@@ -116,7 +116,7 @@ export const Session = {
     });
     socket.on('connect', () => {
       log('Socket:connect');
-      // Auto-rejoin après refresh même si displayName vide (server fournira fallback)
+      // Auto-rejoin after refresh even if displayName empty (server will provide fallback)
       if (state.sessionId) this.join(state.sessionId);
     });
   }
