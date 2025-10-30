@@ -119,4 +119,4 @@ Si le port est déjà pris, le serveur tentera n+1 (3002, etc.). Pour éviter ce
 ## 📝 Licence
 MIT — libre d’utiliser, modifier et partager.
 
-Bon estimations !
+Bonnes estimations !
