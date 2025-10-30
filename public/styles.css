@@ -683,7 +683,7 @@ body {
   50% { transform: scale(1.35); }
 }
 
-/* Réduit l’animation si l’utilisateur préfère moins de mouvement */
+/* Reduce animation if user prefers reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .vote-status-dot.voted {
     animation: none;
