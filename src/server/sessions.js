@@ -37,7 +37,7 @@ function buildVotesPayload(session) {
 // --- Broadcasting & logging -------------------------------------------
 function broadcastState(io, sessionId) {
   const session = getSession(sessionId);
-  if (!session) {return;}
+  if (!session) { return; }
   io.to(sessionId).emit('state', {
     revealed: session.revealed,
     votes: buildVotesPayload(session),
