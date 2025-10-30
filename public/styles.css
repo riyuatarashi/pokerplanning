@@ -499,6 +499,11 @@ body {
   50% { transform: translateY(-10px) scale(1.15); }
 }
 
+.card.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
 /* Actions */
 .actions {
   display: flex;
@@ -648,6 +653,20 @@ body {
     transform: rotateY(0);
     opacity: 1;
   }
+}
+
+/* Consensus Banner */
+.consensus-banner {
+  padding: 0.5rem 1rem;
+  background: #10b981;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.consensus-banner.hidden {
+  display: none;
 }
 
 /* Responsive Design */

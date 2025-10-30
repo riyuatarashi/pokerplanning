@@ -86,6 +86,28 @@ pokerplanning/
 └── README.md               # This file
 ```
 
+## Architecture (Modulaire)
+
+```
+public/
+  index.html
+  styles.css (à migrer éventuellement vers css/)
+  js/
+    core/        # Éléments fondamentaux (state, storage, statistics)
+    ui/          # Couche interface (ui helpers)
+    features/    # Fonctionnalités métier (vote, session)
+    app.js       # Orchestrateur de l’application
+```
+
+Ordre de chargement des scripts : core → ui → features → app pour garantir que le namespace `PlanningPoker` est initialisé avant usage.
+
+Chaque module ajoute ses attributs au namespace global `PlanningPoker` pour éviter toute dépendance implicite de bundling.
+
+## Prochaines étapes suggérées
+- Déplacer `styles.css` dans `public/css/` et introduire un préprocesseur (optionnel).
+- Ajouter un script de build (Vite, Rollup) si besoin de minification.
+- Réintroduire une suite de tests (unitaires + E2E) une fois la structure stabilisée.
+
 ## 🚦 CI Status
 
 The repository uses GitHub Actions to run ESLint and Jest on each push or pull request.  The latest status of the `CI` workflow on the default branch is shown below:
