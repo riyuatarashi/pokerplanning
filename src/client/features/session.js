@@ -12,7 +12,7 @@ function setSessionQuery(sessionId) {
   if (!sessionId) return;
   try {
     const url = new URL(location.href);
-    if (url.searchParams.get('session') === sessionId) return; // déjà à jour
+    if (url.searchParams.get('session') === sessionId) return; // already up to date
     url.searchParams.set('session', sessionId);
     history.replaceState(null, '', url.toString());
     log('URL updated with session', sessionId);
