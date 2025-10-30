@@ -716,7 +716,7 @@ body {
   color: #9ca3af;
 }
 
-/* (Optionnel) Si la classe .card.disabled n’est plus utilisée, on peut l’atténuer */
+/* (Optional) If .card.disabled class is no longer used, can reduce it */
 .card.disabled {
   opacity: 0.4;
   pointer-events: none;
