@@ -61,7 +61,7 @@ README.md
 ## 🚀 Démarrage
 ### Installation
 ```sh
-git clone https://github.com/votre-org/pokerplanning.git
+git clone https://github.com/riyuatarashi/pokerplanning.git
 cd pokerplanning
 npm install
 ```
