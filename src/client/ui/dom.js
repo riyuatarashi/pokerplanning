@@ -67,7 +67,10 @@ export function toast(message, type = 'success') {
   log('DOM:toast', type, message);
   const div = document.createElement('div');
   div.className = `toast ${type}`;
-  div.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
+  const icon = document.createElement('i');
+  icon.className = `fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}`;
+  div.appendChild(icon);
+  div.appendChild(document.createTextNode(' ' + message));
   document.body.appendChild(div);
   setTimeout(() => { div.style.animation = 'slideInRight 0.3s reverse'; setTimeout(() => div.remove(), 300); }, 3000);
 }
