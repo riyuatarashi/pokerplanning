@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Planning Poker Icon</title>
+  <desc id="desc">Stack of planning cards with a playful paw to symbolize collaborative estimation</desc>
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+    <linearGradient id="paw" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fff" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#e0e7ff"/>
+    </linearGradient>
+    <filter id="soft" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="0.6" result="b"/>
+      <feBlend in="SourceGraphic" in2="b" mode="normal"/>
+    </filter>
+  </defs>
+  <!-- Card stack background -->
+  <rect x="8" y="14" width="40" height="28" rx="6" fill="#312e81" opacity="0.18"/>
+  <rect x="12" y="10" width="44" height="32" rx="7" fill="#4338ca" opacity="0.22"/>
+  <rect x="14" y="8" width="44" height="34" rx="8" fill="url(#g)" stroke="#ffffff" stroke-width="2" />
+  <!-- Center value (stylized Fibonacci) -->
+  <text x="36" y="30" font-size="18" font-family="system-ui,Segoe UI,Roboto" text-anchor="middle" fill="#ffffff" font-weight="700">21</text>
+  <!-- Paw print (collaboration) -->
+  <g filter="url(#soft)">
+    <circle cx="44" cy="40" r="8" fill="url(#paw)" stroke="#6366f1" stroke-width="1.5"/>
+    <circle cx="40" cy="34" r="3" fill="url(#paw)" stroke="#6366f1" stroke-width="1"/>
+    <circle cx="44" cy="33" r="3" fill="url(#paw)" stroke="#6366f1" stroke-width="1"/>
+    <circle cx="48" cy="35" r="3" fill="url(#paw)" stroke="#6366f1" stroke-width="1"/>
+    <circle cx="50" cy="39" r="3" fill="url(#paw)" stroke="#6366f1" stroke-width="1"/>
+  </g>
+</svg>
+

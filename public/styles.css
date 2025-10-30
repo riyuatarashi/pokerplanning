@@ -82,6 +82,8 @@ body {
 
 .logo-icon {
   font-size: 4rem;
+  max-width: 128px;
+  margin: 0 auto;
   color: var(--primary);
   animation: float 3s ease-in-out infinite;
 }
@@ -110,7 +112,7 @@ body {
 .setup-form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 3.5rem;
 }
 
 /* Input Styles */
@@ -130,6 +132,7 @@ body {
 }
 
 .input-group input {
+  margin: 0.5rem 0;
   padding: 0.875rem 1rem;
   border: 2px solid #e5e7eb;
   border-radius: 12px;
@@ -653,6 +656,71 @@ body {
     transform: rotateY(0);
     opacity: 1;
   }
+}
+
+/* Vote status enhancements (participants before reveal) */
+.vote-status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.08);
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+.vote-status-dot.voted {
+  background: var(--success);
+  animation: pulseDot 1.2s ease-in-out infinite;
+}
+
+.vote-status-dot.waiting {
+  background: var(--warning);
+  opacity: 0.6;
+}
+
+@keyframes pulseDot {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.35); }
+}
+
+/* Reduce animation if user prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .vote-status-dot.voted {
+    animation: none;
+  }
+}
+
+/* Participant rows styled by status before reveal */
+.result-item.voted {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #fff;
+}
+.result-item.voted .result-user i {
+  color: #fff;
+}
+.result-item.waiting {
+  background: #fff8e6;
+}
+.result-item.waiting:hover {
+  background: #fde9c8;
+}
+
+/* Differentiated vote cell before reveal */
+.result-vote.pending.voted {
+  background: #dcfce7;
+  color: #047857;
+  font-weight: 700;
+}
+.result-vote.pending.waiting {
+  background: #fef3c7;
+  color: #9ca3af;
+}
+
+/* (Optional) If .card.disabled class is no longer used, can reduce it */
+.card.disabled {
+  opacity: 0.4;
+  pointer-events: none;
 }
 
 /* Consensus Banner */

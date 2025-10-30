@@ -16,13 +16,14 @@
       referrerpolicy="no-referrer"
     />
     <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" type="image/png" href="favicon.svg" />
   </head>
   <body>
     <!-- Session Setup Screen -->
     <div id="setupScreen" class="screen active">
       <div class="setup-container">
         <div class="logo-container">
-          <i class="fas fa-hand-spock logo-icon"></i>
+          <img src="favicon.svg" alt="Planning Poker Logo" class="logo-icon" />
           <h1 class="title">Planning Poker</h1>
           <p class="subtitle">Estimate with your team in real-time</p>
         </div>
@@ -125,6 +126,9 @@
               <button id="copySessionIdBtn" class="icon-btn" title="Copy session ID">
                 <i class="fas fa-copy"></i>
               </button>
+              <button id="copyInviteLinkBtn" class="icon-btn" title="Copy invite link" disabled>
+                <i class="fas fa-link"></i>
+              </button>
             </div>
           </div>
           
@@ -134,6 +138,9 @@
               <span id="userDisplayName">User</span>
               <button id="editDisplayNameBtn" class="icon-btn" title="Change name">
                 <i class="fas fa-edit"></i>
+              </button>
+              <button id="backToMenuBtn" class="icon-btn" title="Back to menu">
+                <i class="fas fa-home"></i>
               </button>
             </div>
           </div>
@@ -171,12 +178,6 @@
 
     <!-- Socket.io client library -->
     <script src="/socket.io/socket.io.js"></script>
-    <script src="/js/core/state.js"></script>
-    <script src="/js/core/storage.js"></script>
-    <script src="/js/ui/ui.js"></script>
-    <script src="/js/core/statistics.js"></script>
-    <script src="/js/features/vote.js"></script>
-    <script src="/js/features/session.js"></script>
-    <script src="/js/app.js"></script>
+    <script src="dist/app.js"></script>
   </body>
 </html>
