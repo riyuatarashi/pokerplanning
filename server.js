@@ -75,6 +75,19 @@ function generateId() {
 }
 
 /**
+ * Compute the consensus value for a session.
+ * If all votes are the same, return that value; otherwise, return null.
+ */
+function computeConsensus(session) {
+  const votes = Object.values(session.clients)
+    .map(c => c.vote)
+    .filter(v => v !== null && typeof v === 'number');
+  if (!votes.length) return null;
+  const first = votes[0];
+  return votes.every(v => v === first) ? first : null;
+}
+
+/**
  * Send the current state to all clients in a specific session.
  * @param {string} sessionId The session identifier
  */
@@ -91,14 +104,27 @@ function broadcastState(sessionId) {
       hasVoted: client.vote !== null
     };
   });
-  
-  io.to(sessionId).emit('state', { 
-    revealed: session.revealed, 
+  const consensus = session.revealed ? computeConsensus(session) : null;
+  io.to(sessionId).emit('state', {
+    revealed: session.revealed,
     votes: payload,
     sessionName: session.sessionName,
-    roundId: session.roundId
+    roundId: session.roundId,
+    consensus
   });
 }
+
+const cleanupTimeouts = [];
+function scheduleSessionCleanup(sessionId) {
+  if (process.env.NODE_ENV === 'test') return; // skip long timers during tests
+  const timeoutId = setTimeout(() => {
+    if (sessions[sessionId] && Object.keys(sessions[sessionId].clients).length === 0) {
+      delete sessions[sessionId];
+    }
+  }, 60 * 60 * 1000);
+  cleanupTimeouts.push(timeoutId);
+}
+function clearCleanupTimeouts() { cleanupTimeouts.forEach(id => clearTimeout(id)); cleanupTimeouts.length = 0; }
 
 io.on('connection', (socket) => {
   // Enforce connection limit
@@ -177,7 +203,7 @@ io.on('connection', (socket) => {
   socket.on('vote', ({ sessionId, clientId, value }) => {
     const session = sessions[sessionId];
     if (!session || !session.clients[clientId]) return;
-    
+    if (session.revealed) return; // block voting after reveal until reset
     session.clients[clientId].vote = value;
     broadcastState(sessionId);
   });
@@ -214,11 +240,7 @@ io.on('connection', (socket) => {
       
       // Clean up empty sessions after 1 hour of inactivity
       if (Object.keys(sessions[sessionId].clients).length === 0) {
-        setTimeout(() => {
-          if (sessions[sessionId] && Object.keys(sessions[sessionId].clients).length === 0) {
-            delete sessions[sessionId];
-          }
-        }, 60 * 60 * 1000);
+        scheduleSessionCleanup(sessionId);
       }
       
       broadcastState(sessionId);
@@ -226,10 +248,12 @@ io.on('connection', (socket) => {
   });
 });
 
-// Start the server
+// Start the server only if not running under test environment
 const PORT = process.env.PORT || 3001;
-server.listen(PORT, () => {
-  console.log(`PokerPlanning server is running on port ${PORT}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+  server.listen(PORT, () => {
+    console.log(`PokerPlanning server is running on port ${PORT}`);
+  });
+}
 
-module.exports = { app, server, getFibonacci, sessions };
+module.exports = { app, server, getFibonacci, sessions, clearCleanupTimeouts };
