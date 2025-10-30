@@ -33,7 +33,7 @@ export const Vote = {
   /** Select a value and send it to the server. */
   select(value) {
     log('Vote:select', value);
-    // Autoriser le changement même si revealed
+    // Allow changing vote even if revealed
     state.selectedValue = value;
     clearCardSelection();
     const el = document.querySelector(`.card[data-value="${value}"]`);
