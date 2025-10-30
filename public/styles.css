@@ -112,7 +112,7 @@ body {
 .setup-form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 3.5rem;
 }
 
 /* Input Styles */
@@ -132,6 +132,7 @@ body {
 }
 
 .input-group input {
+  margin: 0.5rem 0;
   padding: 0.875rem 1rem;
   border: 2px solid #e5e7eb;
   border-radius: 12px;
