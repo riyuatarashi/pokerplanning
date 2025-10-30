@@ -64,7 +64,7 @@ export const Vote = {
     }
     if (!refs.resultsEl) return;
 
-    // Préparer / mettre à jour le bandeau de consensus
+    // Prepare / update the consensus banner
     let banner = document.getElementById('consensusBanner');
     if (!banner) {
       banner = document.createElement('div');
