@@ -1,5 +1,4 @@
 /** Universal logger (always on) */
-const isBrowser = typeof window !== 'undefined';
 const PREFIX_STYLE = 'background:#8b5cf6;color:#fff;padding:2px 4px;border-radius:3px;font-weight:bold;';
 function basePrint(level, emoji, args){
   const method = level === 'error' ? 'error' : level === 'warn' ? 'warn' : 'log';
