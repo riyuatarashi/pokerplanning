@@ -657,7 +657,7 @@ body {
   }
 }
 
-/* Vote status enhancements (participants avant révélation) */
+/* Vote status enhancements (participants before reveal) */
 .vote-status-dot {
   width: 12px;
   height: 12px;
