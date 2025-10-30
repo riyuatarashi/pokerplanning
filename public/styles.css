@@ -82,6 +82,8 @@ body {
 
 .logo-icon {
   font-size: 4rem;
+  max-width: 128px;
+  margin: 0 auto;
   color: var(--primary);
   animation: float 3s ease-in-out infinite;
 }

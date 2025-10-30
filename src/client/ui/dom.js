@@ -37,12 +37,14 @@ export function cacheRefs() {
   });
 }
 
+/** Show the selected screen and hide the others. */
 export function showScreen(el) {
   log('DOM:showScreen', el?.id);
   [refs.setupScreen, refs.pokerScreen].forEach(r => r && r.classList.remove('active'));
   el && el.classList.add('active');
 }
 
+/** Update header (session name, user name, and button enable states). */
 export function updateHeader() {
   log('DOM:updateHeader', { sessionId: state.sessionId, sessionName: state.sessionName, joined: state.joined });
   if (refs.sessionNameDisplay) refs.sessionNameDisplay.textContent = state.sessionName || 'Planning Session';
@@ -60,6 +62,7 @@ function toggleAvailability(btn, enabled) {
   enabled ? btn.removeAttribute('disabled') : btn.setAttribute('disabled', 'disabled');
 }
 
+/** Display a transient toast notification. */
 export function toast(message, type = 'success') {
   log('DOM:toast', type, message);
   const div = document.createElement('div');
@@ -69,10 +72,12 @@ export function toast(message, type = 'success') {
   setTimeout(() => { div.style.animation = 'slideInRight 0.3s reverse'; setTimeout(() => div.remove(), 300); }, 3000);
 }
 
+/** Clear selection on all cards. */
 export function clearCardSelection() {
   document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
 }
 
+/** Restore the previously selected card (if any). */
 export function restoreSelection() {
   if (state.selectedValue == null) return;
   const card = document.querySelector(`.card[data-value="${state.selectedValue}"]`);

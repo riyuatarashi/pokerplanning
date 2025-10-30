@@ -30,8 +30,11 @@ function clearSessionQuery() {
 }
 
 export const Session = {
+  /** Create a new session on the server. */
   create(name) { log('Session:create', name); socket && socket.emit('createSession', { sessionName: name }); },
+  /** Join a session (ID normalized to lowercase, trimmed). */
   join(id) { const norm = (id||'').trim().toLowerCase(); log('Session:join', id, 'normalized='+norm); socket && socket.emit('joinSession', { sessionId: norm, clientId: state.clientId, displayName: state.displayName }); },
+  /** Leave the current session (retain sessionId for quick rejoin/sharing). */
   leave() {
     if (!state.sessionId || !state.joined) { log('Session:leave:noop'); return; }
     const sid = state.sessionId;
@@ -46,6 +49,7 @@ export const Session = {
     showScreen(refs.setupScreen);
     log('Session:leave:done', sid);
   },
+  /** Register socket listeners for session lifecycle and state updates. */
   registerEvents() {
     if (!socket) return;
     socket.on('sessionCreated', ({ sessionId, sessionName }) => {

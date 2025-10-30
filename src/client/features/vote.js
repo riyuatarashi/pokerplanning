@@ -9,11 +9,13 @@ let socket;
 export function attachVoteSocket(s) { socket = s; }
 
 export const Vote = {
+  /** Load Fibonacci cards from API. */
   loadCards() {
     log('Vote:loadCards');
     if (!refs.cardsContainer) return;
     fetch('/api/fibonacci').then(r => r.json()).then(d => this.renderCards(d.values)).catch(() => toast('Failed to load cards', 'error'));
   },
+  /** Render interactive planning cards. */
   renderCards(values) {
     log('Vote:renderCards', values);
     refs.cardsContainer.innerHTML = '';
@@ -28,6 +30,7 @@ export const Vote = {
       refs.cardsContainer.appendChild(card);
     });
   },
+  /** Select a value and send it to the server. */
   select(value) {
     log('Vote:select', value);
     // Autoriser le changement même si revealed
@@ -38,6 +41,7 @@ export const Vote = {
     socket && socket.emit('vote', { sessionId: state.sessionId, clientId: state.clientId, value });
     Storage.saveVote(state.sessionId, state.roundId, value);
   },
+  /** Restore previously stored vote if present. */
   restoreVote() {
     log('Vote:restoreVote');
     const stored = Storage.getVote(state.sessionId, state.roundId);
@@ -47,6 +51,7 @@ export const Vote = {
       socket && socket.emit('vote', { sessionId: state.sessionId, clientId: state.clientId, value: stored });
     }
   },
+  /** Render participants list, statistics, and consensus banner. */
   renderState({ revealed, votes, sessionName, roundId, consensus }) {
     log('Vote:renderState', { revealed, roundId, consensus, votes: Object.keys(votes).length });
     state.revealed = revealed;
@@ -57,40 +62,9 @@ export const Vote = {
       state.revealed = false;
       clearCardSelection();
     }
-    // Ne désactive plus les cartes après reveal
-    // document.querySelectorAll('.card').forEach(c => c.classList.toggle('disabled', revealed));
-
     if (!refs.resultsEl) return;
-    refs.resultsEl.innerHTML = '';
-    // Préparation tri: votés d'abord si non révélé
-    let entries = Object.entries(votes);
-    if (!revealed) {
-      entries.sort((a,b) => (b[1].hasVoted ? 1 : 0) - (a[1].hasVoted ? 1 : 0));
-    }
-    entries.forEach(([id, data]) => {
-      const item = document.createElement('div');
-      item.className = 'result-item';
-      if (!revealed) item.classList.add(data.hasVoted ? 'voted' : 'waiting');
-      const userDiv = document.createElement('div');
-      userDiv.className = 'result-user';
-      const statusDot = `<span class="vote-status-dot ${data.hasVoted ? 'voted' : 'waiting'}"></span>`;
-      userDiv.innerHTML = `${statusDot} <i class="fas fa-user"></i> ${data.displayName}`;
-      const voteDiv = document.createElement('div');
-      voteDiv.className = 'result-vote';
-      if (revealed) {
-        voteDiv.textContent = data.vote != null ? data.vote : '\u2014';
-        voteDiv.classList.add('revealed');
-      } else {
-        voteDiv.textContent = data.hasVoted ? '\u2713' : '\u2014';
-        voteDiv.classList.add('pending');
-        voteDiv.classList.add(data.hasVoted ? 'voted' : 'waiting');
-      }
-      item.appendChild(userDiv);
-      item.appendChild(voteDiv);
-      refs.resultsEl.appendChild(item);
-    });
-    return; // Empêche l'ancien bloc de création de résultats de s'exécuter
 
+    // Préparer / mettre à jour le bandeau de consensus
     let banner = document.getElementById('consensusBanner');
     if (!banner) {
       banner = document.createElement('div');
@@ -101,20 +75,72 @@ export const Vote = {
     if (revealed && consensus != null) {
       banner.textContent = `Consensus reached: ${consensus}`;
       banner.classList.remove('hidden');
-    } else banner.classList.add('hidden');
+    } else {
+      banner.classList.add('hidden');
+    }
 
+    // Statistiques
     if (refs.statisticsEl) {
       if (revealed) {
         const stats = computeStats(votes);
         if (stats) {
-          refs.statisticsEl.innerHTML = `
-            <div class="stat-card"><i class="fas fa-arrow-down"></i><div><div class="stat-label">Min</div><div class="stat-value">${stats.min}</div></div></div>
-            <div class="stat-card"><i class="fas fa-chart-line"></i><div><div class="stat-label">Avg</div><div class="stat-value">${stats.avg}</div></div></div>
-            <div class="stat-card"><i class="fas fa-arrow-up"></i><div><div class="stat-label">Max</div><div class="stat-value">${stats.max}</div></div></div>
-            <div class="stat-card"><i class="fas fa-users"></i><div><div class="stat-label">Votes</div><div class="stat-value">${stats.count}</div></div></div>`;
+          // Construction DOM sécurisée au lieu de innerHTML
+          while (refs.statisticsEl.firstChild) refs.statisticsEl.removeChild(refs.statisticsEl.firstChild);
+          const cards = [
+            { icon: 'fas fa-arrow-down', label: 'Min', value: stats.min },
+            { icon: 'fas fa-chart-line', label: 'Avg', value: stats.avg },
+            { icon: 'fas fa-arrow-up', label: 'Max', value: stats.max },
+            { icon: 'fas fa-users', label: 'Votes', value: stats.count }
+          ];
+          cards.forEach(({ icon, label, value }) => {
+            const card = document.createElement('div'); card.className = 'stat-card';
+            const iconEl = document.createElement('i'); iconEl.className = icon; card.appendChild(iconEl);
+            const wrap = document.createElement('div');
+            const labelDiv = document.createElement('div'); labelDiv.className = 'stat-label'; labelDiv.textContent = label;
+            const valueDiv = document.createElement('div'); valueDiv.className = 'stat-value'; valueDiv.textContent = String(value);
+            wrap.appendChild(labelDiv); wrap.appendChild(valueDiv); card.appendChild(wrap);
+            refs.statisticsEl.appendChild(card);
+          });
           refs.statisticsEl.classList.remove('hidden');
+        } else {
+          refs.statisticsEl.classList.add('hidden');
         }
-      } else refs.statisticsEl.classList.add('hidden');
+      } else {
+        refs.statisticsEl.classList.add('hidden');
+      }
     }
+
+    // Rendu des participants (tri votés d'abord si non révélé)
+    refs.resultsEl.innerHTML = '';
+    let entries = Object.entries(votes);
+    if (!revealed) {
+      entries.sort((a,b) => (b[1].hasVoted ? 1 : 0) - (a[1].hasVoted ? 1 : 0));
+    }
+    entries.forEach(([id, data]) => {
+      const item = document.createElement('div');
+      item.className = 'result-item';
+      item.dataset.clientId = id; // expose client id for potential tooling
+      if (!revealed) item.classList.add(data.hasVoted ? 'voted' : 'waiting');
+
+      const userDiv = document.createElement('div');
+      userDiv.className = 'result-user';
+      const statusDot = `<span class="vote-status-dot ${data.hasVoted ? 'voted' : 'waiting'}"></span>`;
+      userDiv.innerHTML = `${statusDot} <i class="fas fa-user"></i> ${data.displayName}`;
+
+      const voteDiv = document.createElement('div');
+      voteDiv.className = 'result-vote';
+      if (revealed) {
+        voteDiv.textContent = data.vote != null ? data.vote : '\u2014';
+        voteDiv.classList.add('revealed');
+      } else {
+        voteDiv.textContent = data.hasVoted ? '\u2713' : '\u2014';
+        voteDiv.classList.add('pending');
+        voteDiv.classList.add(data.hasVoted ? 'voted' : 'waiting');
+      }
+
+      item.appendChild(userDiv);
+      item.appendChild(voteDiv);
+      refs.resultsEl.appendChild(item);
+    });
   }
 };
