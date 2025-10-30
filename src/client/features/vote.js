@@ -79,7 +79,7 @@ export const Vote = {
       banner.classList.add('hidden');
     }
 
-    // Statistiques
+    // Statistics
     if (refs.statisticsEl) {
       if (revealed) {
         const stats = computeStats(votes);
