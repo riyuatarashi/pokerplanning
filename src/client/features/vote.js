@@ -25,7 +25,7 @@ export const Vote = {
       card.dataset.value = v;
       card.textContent = v;
       if (state.selectedValue === v) card.classList.add('selected');
-      // Suppression de la désactivation après reveal
+      // Removed card disabling after reveal
       card.addEventListener('click', () => this.select(v));
       refs.cardsContainer.appendChild(card);
     });
