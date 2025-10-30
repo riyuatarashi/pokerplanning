@@ -705,7 +705,7 @@ body {
   background: #fde9c8;
 }
 
-/* Cellule vote avant révélation différenciée */
+/* Differentiated vote cell before reveal */
 .result-vote.pending.voted {
   background: #dcfce7;
   color: #047857;
