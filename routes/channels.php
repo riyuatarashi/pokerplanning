@@ -19,6 +19,12 @@ Broadcast::channel('presence-room.{slug}', function (mixed $user, string $slug) 
     // Since we don't use authentication, $user may be null
     // We authorize based on session and return participant info
     unset($user); // Not used - app is session-based
+
+    // Ensure session is started
+    if (! session()->isStarted()) {
+        session()->start();
+    }
+
     $sessionId = session()->getId();
 
     $participant = Participant::whereHas('room', fn ($q) => $q->where('slug', $slug))
@@ -26,6 +32,9 @@ Broadcast::channel('presence-room.{slug}', function (mixed $user, string $slug) 
         ->first();
 
     if ($participant) {
+        // Update last seen timestamp
+        $participant->updateLastSeen();
+
         return [
             'id' => $participant->id,
             'name' => $participant->name,

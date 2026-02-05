@@ -852,6 +852,10 @@ new class extends Component {
                 })
                 .leaving((member) => {
                     $wire.presenceLeaving({ id: member.id, name: member.name, is_spectator: member.is_spectator });
+                })
+                .error((error) => {
+                    console.warn('Presence channel auth failed:', error);
+                    // Fallback: rely on last_seen_at for online status
                 });
         },
         destroy() {
