@@ -1,5 +1,6 @@
 <?php
 
+use App\Auth\SessionUser;
 use App\Models\Participant;
 use Illuminate\Support\Facades\Broadcast;
 
@@ -15,20 +16,10 @@ use Illuminate\Support\Facades\Broadcast;
 */
 
 // Presence channel for room - uses session-based identification
-Broadcast::channel('presence-room.{slug}', function (mixed $user, string $slug) {
-    // Since we don't use authentication, $user may be null
-    // We authorize based on session and return participant info
-    unset($user); // Not used - app is session-based
-
-    // Ensure session is started
-    if (! session()->isStarted()) {
-        session()->start();
-    }
-
-    $sessionId = session()->getId();
-
+// Using 'broadcasting' guard allows session-based auth without login
+Broadcast::channel('presence-room.{slug}', function (SessionUser $user, string $slug) {
     $participant = Participant::whereHas('room', fn ($q) => $q->where('slug', $slug))
-        ->where('session_id', $sessionId)
+        ->where('session_id', $user->sessionId)
         ->first();
 
     if ($participant) {
@@ -43,4 +34,4 @@ Broadcast::channel('presence-room.{slug}', function (mixed $user, string $slug) 
     }
 
     return false;
-});
+}, ['guards' => ['broadcasting']]);
