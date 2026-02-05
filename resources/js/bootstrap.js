@@ -16,23 +16,14 @@ window.Pusher = Pusher;
 
 if (import.meta.env.VITE_BROADCAST_CONNECTION === 'pusher') {
     window.Echo = new Echo({
-        broadcaster: 'pusher',
+        broadcaster: "pusher",
         key: import.meta.env.VITE_PUSHER_APP_KEY,
         cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
-        forceTLS: import.meta.env.VITE_PUSHER_SCHEME === 'https',
-        enableLogging: import.meta.env.DEV,
-        authorizer: (channel, options) => ({
-            authorize: (socketId, callback) => {
-                axios.post('/broadcasting/auth', {
-                    socket_id: socketId,
-                    channel_name: channel.name,
-                }, {
-                    withCredentials: true,
-                })
-                    .then(response => callback(null, response.data))
-                    .catch(error => callback(error));
-            },
-        }),
+        forceTLS: true,
+        wsHost: import.meta.env.VITE_PUSHER_HOST,
+        wsPort: import.meta.env.VITE_PUSHER_PORT,
+        wssPort: import.meta.env.VITE_PUSHER_PORT,
+        enabledTransports: ["ws", "wss"],
     });
 } else {
     window.Echo = new Echo({
@@ -44,18 +35,6 @@ if (import.meta.env.VITE_BROADCAST_CONNECTION === 'pusher') {
         forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https',
         enabledTransports: ['ws', 'wss'],
         enableLogging: import.meta.env.DEV,
-        authorizer: (channel, options) => ({
-            authorize: (socketId, callback) => {
-                axios.post('/broadcasting/auth', {
-                    socket_id: socketId,
-                    channel_name: channel.name,
-                }, {
-                    withCredentials: true,
-                })
-                    .then(response => callback(null, response.data))
-                    .catch(error => callback(error));
-            },
-        }),
     });
 }
 
